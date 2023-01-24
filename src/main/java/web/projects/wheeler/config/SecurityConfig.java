@@ -32,7 +32,9 @@ public class SecurityConfig {
                         .requestMatchers("/users/**").hasRole(RoleType.USER.name())
                         .requestMatchers("/admin/**").hasRole(RoleType.ADMIN.name())
                         .anyRequest().authenticated())
-                .httpBasic();
+                .httpBasic()
+                .and()
+                .logout();
 
         return http.build();
     }
@@ -56,7 +58,6 @@ public class SecurityConfig {
 
         return provider;
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
