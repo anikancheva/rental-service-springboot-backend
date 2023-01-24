@@ -1,49 +1,45 @@
-package web.projects.wheeler.db.entities;
+package web.projects.wheeler.models;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
+import web.projects.wheeler.db.entities.UserModel;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "vehicles")
-public class Vehicle{
+public class CreateListingModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private VehicleType type;
+    private BigDecimal price;
 
-    @NotNull
+    private String type;
+
     private String brand;
 
-    @NotNull
     private String model;
 
     private LocalDate year;
+
     private int seats;
+
     private int doors;
 
     private String picUrl;
-    @ManyToOne
+
     private UserModel owner;
 
-    public Long getId() {
-        return id;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public Vehicle setId(Long id) {
-        this.id = id;
+    public CreateListingModel setPrice(BigDecimal price) {
+        this.price = price;
         return this;
     }
 
-    public VehicleType getType() {
+    public String getType() {
         return type;
     }
 
-    public Vehicle setType(VehicleType type) {
+    public CreateListingModel setType(String type) {
         this.type = type;
         return this;
     }
@@ -52,7 +48,7 @@ public class Vehicle{
         return brand;
     }
 
-    public Vehicle setBrand(String brand) {
+    public CreateListingModel setBrand(String brand) {
         this.brand = brand;
         return this;
     }
@@ -61,7 +57,7 @@ public class Vehicle{
         return model;
     }
 
-    public Vehicle setModel(String model) {
+    public CreateListingModel setModel(String model) {
         this.model = model;
         return this;
     }
@@ -70,7 +66,7 @@ public class Vehicle{
         return year;
     }
 
-    public Vehicle setYear(LocalDate year) {
+    public CreateListingModel setYear(LocalDate year) {
         this.year = year;
         return this;
     }
@@ -79,7 +75,7 @@ public class Vehicle{
         return seats;
     }
 
-    public Vehicle setSeats(int seats) {
+    public CreateListingModel setSeats(int seats) {
         this.seats = seats;
         return this;
     }
@@ -88,7 +84,7 @@ public class Vehicle{
         return doors;
     }
 
-    public Vehicle setDoors(int doors) {
+    public CreateListingModel setDoors(int doors) {
         this.doors = doors;
         return this;
     }
@@ -97,7 +93,7 @@ public class Vehicle{
         return picUrl;
     }
 
-    public Vehicle setPicUrl(String picUrl) {
+    public CreateListingModel setPicUrl(String picUrl) {
         this.picUrl = picUrl;
         return this;
     }
@@ -106,7 +102,7 @@ public class Vehicle{
         return owner;
     }
 
-    public Vehicle setOwner(UserModel owner) {
+    public CreateListingModel setOwner(UserModel owner) {
         this.owner = owner;
         return this;
     }

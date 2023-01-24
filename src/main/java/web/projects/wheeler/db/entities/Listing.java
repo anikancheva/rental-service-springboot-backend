@@ -21,4 +21,39 @@ public class Listing {
     @Min(0)
     private BigDecimal price;
 
+    public Long getId() {
+        return id;
+    }
+
+    public Listing setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public UserModel getCreator() {
+        return creator;
+    }
+
+    public Listing setCreator(UserModel creator) {
+        this.creator = creator;
+        return this;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public Listing setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+        return this;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public Listing setPrice(BigDecimal price) {
+        this.price = price;
+        return this;
+    }
 }
