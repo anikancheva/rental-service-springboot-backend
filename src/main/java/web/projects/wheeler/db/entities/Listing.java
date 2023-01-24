@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "listings")
@@ -20,6 +21,9 @@ public class Listing {
 
     @Min(0)
     private BigDecimal price;
+
+    @OneToMany(mappedBy = "listing")
+    private List<Review> reviews;
 
     public Long getId() {
         return id;
