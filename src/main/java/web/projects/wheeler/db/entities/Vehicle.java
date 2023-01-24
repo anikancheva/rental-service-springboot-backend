@@ -28,7 +28,7 @@ public class Vehicle{
 
     private String picUrl;
     @ManyToOne
-    private User owner;
+    private UserModel owner;
 
 
 }

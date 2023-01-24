@@ -11,7 +11,7 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    private User author;
+    private UserModel author;
     @ManyToOne
     private Vehicle vehicle;
 

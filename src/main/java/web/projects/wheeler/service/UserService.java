@@ -1,10 +1,8 @@
 package web.projects.wheeler.service;
 
 import org.springframework.stereotype.Service;
-import web.projects.wheeler.db.entities.User;
+import web.projects.wheeler.db.entities.UserModel;
 import web.projects.wheeler.db.repositories.UserRepository;
-
-import java.util.List;
 
 @Service
 public class UserService {
@@ -15,11 +13,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
-    }
-
-    public User getUserById(Long id){
-        return userRepository.findById(id).orElse(null);
+    public UserModel getUserByUsername(String username){
+        return userRepository.findByUsername(username).orElse(null);
     }
 }

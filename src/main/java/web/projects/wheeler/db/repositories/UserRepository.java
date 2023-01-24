@@ -1,7 +1,11 @@
 package web.projects.wheeler.db.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import web.projects.wheeler.db.entities.User;
+import web.projects.wheeler.db.entities.UserModel;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<UserModel, Long> {
+
+   Optional<UserModel> findByUsername(String username);
 }

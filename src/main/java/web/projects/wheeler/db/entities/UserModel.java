@@ -3,11 +3,16 @@ package web.projects.wheeler.db.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.validator.constraints.Length;
+import web.projects.wheeler.db.auth.Role;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User{
+public class UserModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,75 +35,97 @@ public class User{
     private String email;
 
     @NotNull
-    private String pass;
+    private String password;
 
     @NotNull
     @Pattern(regexp = "^\\([0-9]{3}\\)[0-9]{3}\\-[0-9]{4}$")
     private String phoneNo;
 
-    public User(){};
-    public User(String username, String firstName, String lastName, String email, String pass, String phoneNo) {
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Role> authorities;
+    public UserModel() {
+    }
+
+
+    public UserModel(String username, String firstName, String lastName, String email, String password, String phoneNo) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.pass = pass;
+        this.password = password;
         this.phoneNo = phoneNo;
+        this.authorities=new HashSet<>();
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public UserModel setId(Long id) {
         this.id = id;
+        return this;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    public UserModel setUsername(String username) {
         this.username = username;
+        return this;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public UserModel setFirstName(String firstName) {
         this.firstName = firstName;
+        return this;
     }
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public UserModel setLastName(String lastName) {
         this.lastName = lastName;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public UserModel setEmail(String email) {
         this.email = email;
+        return this;
     }
 
-    public String getPass() {
-        return pass;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public UserModel setPassword(String password) {
+        this.password = password;
+        return this;
     }
 
     public String getPhoneNo() {
         return phoneNo;
     }
 
-    public void setPhoneNo(String phoneNo) {
+    public UserModel setPhoneNo(String phoneNo) {
         this.phoneNo = phoneNo;
+        return this;
+    }
+
+    public Set<Role> getAuthorities() {
+        return authorities;
+    }
+
+    public UserModel setAuthorities(Set<Role> authorities) {
+        this.authorities = authorities;
+        return this;
     }
 }

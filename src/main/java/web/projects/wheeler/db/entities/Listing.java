@@ -14,7 +14,7 @@ public class Listing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    private User creator;
+    private UserModel creator;
     @OneToOne
     private Vehicle vehicle;
 
