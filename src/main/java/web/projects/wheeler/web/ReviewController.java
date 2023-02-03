@@ -1,16 +1,16 @@
 package web.projects.wheeler.web;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import web.projects.wheeler.db.entities.Review;
 import web.projects.wheeler.models.AddReviewModel;
 import web.projects.wheeler.service.ReviewService;
 
 import java.net.URI;
 
-@RestController("/reviews")
+@RestController
+@RequestMapping("/reviews")
+@CrossOrigin
 public class ReviewController {
 
     private final ReviewService reviewService;

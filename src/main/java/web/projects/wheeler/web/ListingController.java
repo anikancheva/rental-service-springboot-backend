@@ -12,7 +12,9 @@ import web.projects.wheeler.service.UserService;
 import java.net.URI;
 import java.util.List;
 
-@RestController("/listings")
+@RestController
+@RequestMapping("/listings")
+@CrossOrigin
 public class ListingController {
 
     private final ListingService listingService;

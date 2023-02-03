@@ -2,66 +2,46 @@ package web.projects.wheeler.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+
 import org.springframework.security.web.SecurityFilterChain;
-import web.projects.wheeler.db.auth.RoleType;
-import web.projects.wheeler.db.entities.UserModel;
-import web.projects.wheeler.service.UserService;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import web.projects.wheeler.config.auth.JwtFilter;
+
 
 @Configuration
+@CrossOrigin(origins = "http://localhost:3000/", exposedHeaders = "Authorization")
+@EnableWebSecurity
 public class SecurityConfig {
-    private final UserService userService;
 
-    public SecurityConfig(UserService userService) {
-        this.userService = userService;
+    private final JwtFilter jwtFilter;
+    private final AuthenticationProvider authenticationProvider;
+
+    public SecurityConfig(JwtFilter jwtFilter, AuthenticationProvider authenticationProvider) {
+        this.jwtFilter = jwtFilter;
+        this.authenticationProvider = authenticationProvider;
     }
 
     @Bean
     public SecurityFilterChain config(HttpSecurity http) throws Exception {
         http
-                .authenticationProvider(authenticationProvider())
-                .authorizeHttpRequests(req-> req
-                        .requestMatchers("/home", "/login", "/register").permitAll()
-                        .requestMatchers("/users/**").hasRole(RoleType.USER.name())
-                        .requestMatchers("/admin/**").hasRole(RoleType.ADMIN.name())
-                        .anyRequest().authenticated())
-                .httpBasic()
+                .csrf().disable()
+                .authorizeHttpRequests()
+                .requestMatchers("/login", "/register").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .logout();
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService(){
-
-        return username -> {
-            UserModel user= userService.getUserByUsername(username);
-            return new User(user.getUsername(),
-                    user.getPassword(), true, true, true, true,
-                    user.getAuthorities().stream().map(a->new SimpleGrantedAuthority("ROLE_"+a.getRole().name())).toList());
-        };
-    }
-
-    @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider provider=new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userDetailsService());
-
-        return provider;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
 

@@ -3,9 +3,8 @@ package web.projects.wheeler.db.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import org.hibernate.annotations.Fetch;
 import org.hibernate.validator.constraints.Length;
-import web.projects.wheeler.db.auth.Role;
+import web.projects.wheeler.db.Role;
 
 import java.util.HashSet;
 import java.util.Set;
