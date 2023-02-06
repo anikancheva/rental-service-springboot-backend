@@ -39,7 +39,7 @@ public class UserController {
             authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(userLoginModel.getUsername(), userLoginModel.getPassword()));
         } catch (BadCredentialsException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("Exception from spring login");
         }
 
         return ResponseEntity.ok().body(jwt.generateToken(userDetailsService.loadUserByUsername(userLoginModel.getUsername())));
@@ -47,14 +47,14 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserModel> register(@RequestBody UserRegisterModel newUser) {
-        UserModel registered;
+    public ResponseEntity<String> register(@RequestBody UserRegisterModel newUser) {
 
         try {
-            registered = userService.register(newUser);
-            return ResponseEntity.created(URI.create(String.format("/users/%d", registered.getId()))).body(registered);
+            userService.register(newUser);
+            UserLoginModel loginModel = new UserLoginModel().setUsername(newUser.getUsername()).setPassword(newUser.getPassword());
+            return login(loginModel);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
     }

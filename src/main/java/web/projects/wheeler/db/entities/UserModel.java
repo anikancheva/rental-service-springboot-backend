@@ -40,7 +40,7 @@ public class UserModel {
     @Pattern(regexp = "^\\([0-9]{3}\\)[0-9]{3}\\-[0-9]{4}$")
     private String phoneNo;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> authorities;
     public UserModel() {
     }
