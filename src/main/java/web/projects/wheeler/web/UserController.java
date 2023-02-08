@@ -9,12 +9,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import web.projects.wheeler.config.auth.JwtUtil;
-import web.projects.wheeler.db.entities.UserModel;
 import web.projects.wheeler.models.UserLoginModel;
 import web.projects.wheeler.models.UserRegisterModel;
 import web.projects.wheeler.service.UserService;
 
-import java.net.URI;
 
 
 @RestController
@@ -54,7 +52,7 @@ public class UserController {
             UserLoginModel loginModel = new UserLoginModel().setUsername(newUser.getUsername()).setPassword(newUser.getPassword());
             return login(loginModel);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body("Spring exception: " + e.getMessage());
         }
 
     }

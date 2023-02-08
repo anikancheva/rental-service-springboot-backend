@@ -16,7 +16,7 @@ import web.projects.wheeler.config.auth.JwtFilter;
 
 
 @Configuration
-@CrossOrigin(origins = "http://localhost:3000/", exposedHeaders = "Authorization")
+@CrossOrigin(origins = "http://localhost:3000/", exposedHeaders = {"Authorization"})
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -33,7 +33,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/login", "/register").permitAll()
+                .requestMatchers("/login", "/register", "/listings/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

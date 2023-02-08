@@ -3,7 +3,7 @@ package web.projects.wheeler.db.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDate;
+import java.time.Year;
 
 @Entity
 @Table(name = "vehicles")
@@ -22,7 +22,7 @@ public class Vehicle{
     @NotNull
     private String model;
 
-    private LocalDate year;
+    private Year year;
     private int seats;
     private int doors;
 
@@ -66,11 +66,11 @@ public class Vehicle{
         return this;
     }
 
-    public LocalDate getYear() {
+    public Year getYear() {
         return year;
     }
 
-    public Vehicle setYear(LocalDate year) {
+    public Vehicle setYear(Year year) {
         this.year = year;
         return this;
     }

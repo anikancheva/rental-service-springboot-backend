@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import web.projects.wheeler.db.entities.Listing;
 import web.projects.wheeler.db.entities.UserModel;
 import web.projects.wheeler.models.CreateListingModel;
+import web.projects.wheeler.models.ListingModel;
 import web.projects.wheeler.service.ListingService;
 import web.projects.wheeler.service.UserService;
 
@@ -13,7 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/listings")
+@RequestMapping
 @CrossOrigin
 public class ListingController {
 
@@ -25,17 +26,17 @@ public class ListingController {
         this.userService = userService;
     }
 
-    @GetMapping()
-    private ResponseEntity<List<Listing>> fetchAllListings() {
+    @GetMapping("/listings/")
+    private ResponseEntity<List<ListingModel>> fetchAllListings() {
         return ResponseEntity.ok(listingService.findAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Listing> fetchListingById(@PathVariable Long id) {
-        return ResponseEntity.ok(listingService.findById(id));
+    @GetMapping("/listings/{type}")
+    public ResponseEntity<List<ListingModel>> fetchAllOfType(@PathVariable String type) {
+        return ResponseEntity.ok(listingService.findAllOfType(type.toUpperCase()));
     }
 
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseEntity<Listing> create(@RequestBody CreateListingModel listingModel) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserModel user = userService.getUserByUsername(username);

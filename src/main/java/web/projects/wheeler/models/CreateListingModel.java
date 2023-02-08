@@ -4,7 +4,7 @@ package web.projects.wheeler.models;
 import web.projects.wheeler.db.entities.UserModel;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Year;
 
 public class CreateListingModel {
 
@@ -16,7 +16,7 @@ public class CreateListingModel {
 
     private String model;
 
-    private LocalDate year;
+    private Year year;
 
     private int seats;
 
@@ -62,11 +62,11 @@ public class CreateListingModel {
         return this;
     }
 
-    public LocalDate getYear() {
+    public Year getYear() {
         return year;
     }
 
-    public CreateListingModel setYear(LocalDate year) {
+    public CreateListingModel setYear(Year year) {
         this.year = year;
         return this;
     }
