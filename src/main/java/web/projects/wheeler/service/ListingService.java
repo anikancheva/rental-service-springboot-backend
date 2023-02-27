@@ -2,12 +2,16 @@ package web.projects.wheeler.service;
 
 import org.springframework.stereotype.Service;
 import web.projects.wheeler.db.entities.Listing;
+import web.projects.wheeler.db.entities.Review;
 import web.projects.wheeler.db.entities.Vehicle;
 import web.projects.wheeler.db.entities.VehicleType;
 import web.projects.wheeler.db.repositories.ListingRepository;
+import web.projects.wheeler.db.repositories.ReviewRepository;
 import web.projects.wheeler.db.repositories.VehicleRepository;
 import web.projects.wheeler.models.CreateListingModel;
+import web.projects.wheeler.models.ListingDetailsModel;
 import web.projects.wheeler.models.ListingModel;
+import web.projects.wheeler.models.ReviewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,29 +21,33 @@ public class ListingService {
 
     private final ListingRepository listingRepository;
     private final VehicleRepository vehicleRepository;
+    private final ReviewRepository reviewRepo;
 
-    public ListingService(ListingRepository listingRepository, VehicleRepository vehicleRepository) {
+    public ListingService(ListingRepository listingRepository, VehicleRepository vehicleRepository, ReviewRepository reviewRepo) {
         this.listingRepository = listingRepository;
         this.vehicleRepository = vehicleRepository;
+        this.reviewRepo = reviewRepo;
     }
 
-    //    public Listing findById(Long id){
-//        return listingRepository.findById(id).orElse(null);
-//    }
+    public ListingDetailsModel findById(Long id) {
+        Listing listing = listingRepository.findById(id).orElse(null);
+        assert listing != null;
+        return mapToListingDetailsModel(listing);
+    }
+
     public List<ListingModel> findAll() {
         List<Listing> all = listingRepository.findAll();
-       return mapToListingModel(all);
-    }
-
-    public List<ListingModel> findAllOfType(String type) {
-        List<Listing> all =listingRepository.findAllByVehicleType(VehicleType.valueOf(type));
         return mapToListingModel(all);
     }
 
-    public Listing create(CreateListingModel listingModel) {
+    public List<ListingModel> findAllOfType(String type) {
+        List<Listing> all = listingRepository.findAllByVehicleType(VehicleType.valueOf(type));
+        return mapToListingModel(all);
+    }
 
-        //TODO error handling
-        Vehicle created = vehicleRepository.save(new Vehicle()
+    public ListingDetailsModel create(CreateListingModel listingModel) {
+
+        Vehicle toAdd =new Vehicle()
                 .setType(VehicleType.valueOf(listingModel.getType()))
                 .setBrand(listingModel.getBrand())
                 .setModel(listingModel.getModel())
@@ -47,29 +55,51 @@ public class ListingService {
                 .setSeats(listingModel.getSeats())
                 .setDoors(listingModel.getDoors())
                 .setPicUrl(listingModel.getPicUrl())
-                .setOwner(listingModel.getOwner()));
+                .setOwner(listingModel.getOwner());
+        try {
+          Vehicle created= vehicleRepository.save(toAdd);
+            Listing listing = listingRepository.save(new Listing()
+                    .setVehicle(created)
+                    .setPrice(listingModel.getPrice())
+                    .setCreator(listingModel.getOwner()));
 
-        Listing listing = new Listing()
-                .setVehicle(created)
-                .setPrice(listingModel.getPrice())
-                .setCreator(listingModel.getOwner());
+            return mapToListingDetailsModel(listing);
+        }catch (RuntimeException e){
+            return null;
+        }
 
-        return listingRepository.save(listing);
+
     }
 
-    private List<ListingModel> mapToListingModel(List<Listing> listings){
+    private List<ListingModel> mapToListingModel(List<Listing> listings) {
         List<ListingModel> listingModels = new ArrayList<>();
         listings.forEach(l -> listingModels.add(new ListingModel()
-                .setUsername(l.getCreator().getUsername())
-                .setPhoneNo(l.getCreator().getPhoneNo())
+                .setId(l.getId())
                 .setPrice(l.getPrice())
                 .setYear(l.getVehicle().getYear())
                 .setBrand(l.getVehicle().getBrand())
                 .setModel(l.getVehicle().getModel())
-                .setSeats(l.getVehicle().getSeats())
-                .setDoors(l.getVehicle().getDoors())
                 .setImageUrl(l.getVehicle().getPicUrl())));
 
         return listingModels;
+    }
+
+    private ListingDetailsModel mapToListingDetailsModel(Listing listing){
+        List<Review> reviews=reviewRepo.getReviewsByListingId(listing.getId());
+
+        List<ReviewModel>reviewModels=reviews.stream().map(r-> new ReviewModel()
+                .setAuthor(r.getAuthor().getUsername())
+                .setContent(r.getContent())
+                .setLikes(r.getLikes()).setDislikes(r.getDislikes())).toList();
+        return new ListingDetailsModel().setUsername(listing.getCreator().getUsername())
+                .setPhoneNo(listing.getCreator().getPhoneNo())
+                .setBrand(listing.getVehicle().getBrand())
+                .setModel(listing.getVehicle().getModel())
+                .setYear(listing.getVehicle().getYear())
+                .setSeats(listing.getVehicle().getSeats())
+                .setDoors(listing.getVehicle().getDoors())
+                .setImageUrl(listing.getVehicle().getPicUrl())
+                .setPrice(listing.getPrice())
+                .setReviews(reviewModels);
     }
 }

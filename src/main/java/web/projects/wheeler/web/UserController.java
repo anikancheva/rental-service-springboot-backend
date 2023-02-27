@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +14,6 @@ import web.projects.wheeler.config.auth.JwtUtil;
 import web.projects.wheeler.models.UserLoginModel;
 import web.projects.wheeler.models.UserRegisterModel;
 import web.projects.wheeler.service.UserService;
-
 
 
 @RestController
@@ -32,15 +33,17 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginModel userLoginModel) {
+    public ResponseEntity<String> login( @RequestBody UserLoginModel userLoginModel) {
         try {
-            authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(userLoginModel.getUsername(), userLoginModel.getPassword()));
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userLoginModel.getUsername(), userLoginModel.getPassword());
+            Authentication auth = authenticationManager.authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(auth);
         } catch (BadCredentialsException e) {
             return ResponseEntity.badRequest().body("Exception from spring login");
         }
 
-        return ResponseEntity.ok().body(jwt.generateToken(userDetailsService.loadUserByUsername(userLoginModel.getUsername())));
+        String token = jwt.generateToken(userDetailsService.loadUserByUsername(userLoginModel.getUsername()));
+        return ResponseEntity.ok().body(token);
 
     }
 
