@@ -5,8 +5,6 @@ import java.time.Year;
 import java.util.List;
 
 public class ListingDetailsModel {
-
-
     private Long id;
     private String username;
     private String phoneNo;

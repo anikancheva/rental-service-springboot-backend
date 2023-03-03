@@ -2,6 +2,8 @@ package web.projects.wheeler.models;
 
 public class ReviewModel {
 
+    private Long id;
+    private Long listingId;
     private String author;
 
     private String content;
@@ -9,6 +11,24 @@ public class ReviewModel {
     private int likes;
 
     private int dislikes;
+
+    public Long getId() {
+        return id;
+    }
+
+    public ReviewModel setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public Long getListingId() {
+        return listingId;
+    }
+
+    public ReviewModel setListingId(Long listingId) {
+        this.listingId = listingId;
+        return this;
+    }
 
     public String getAuthor() {
         return author;

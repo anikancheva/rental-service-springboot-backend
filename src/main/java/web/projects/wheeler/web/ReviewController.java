@@ -32,4 +32,16 @@ public class ReviewController {
 
 
     }
+
+    @GetMapping("/like/{id}")
+    public ResponseEntity<String> likeReview(@PathVariable Long id){
+        reviewService.like(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/dislike/{id}")
+    public ResponseEntity<String> dislikeReview(@PathVariable Long id){
+        reviewService.dislike(id);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -24,21 +24,36 @@ public class ReviewService {
         this.userRepository = userRepository;
     }
 
-    public Review addNewReview(AddReviewModel reviewModel){
+    public Review addNewReview(AddReviewModel reviewModel) {
 
-        Listing listing=listingRepository.findById(reviewModel.getListingId()).orElse(null);
-        String currentUserName= SecurityContextHolder.getContext().getAuthentication().getName();
-        UserModel author=userRepository.findByUsername(currentUserName).orElse(null);
+        Listing listing = listingRepository.findById(reviewModel.getListingId()).orElse(null);
+        String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserModel author = userRepository.findByUsername(currentUserName).orElse(null);
 
-        Review review=new Review()
+        Review review = new Review()
                 .setAuthor(author)
                 .setListing(listing)
                 .setContent(reviewModel.getContent());
 
         try {
-           return reviewRepository.save(review);
-        }catch (RuntimeException e){
+            return reviewRepository.save(review);
+        } catch (RuntimeException e) {
             return null;
         }
+    }
+
+    public void like(Long id) {
+        Review review = reviewRepository.getReviewById(id);
+        int increasedLikes = review.getLikes() + 1;
+        review.setLikes(increasedLikes);
+        reviewRepository.save(review);
+
+    }
+
+    public void dislike(Long id) {
+        Review review = reviewRepository.getReviewById(id);
+        int increasedDislikes = review.getDislikes() + 1;
+        review.setDislikes(increasedDislikes);
+        reviewRepository.save(review);
     }
 }

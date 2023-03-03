@@ -47,7 +47,7 @@ public class ListingService {
 
     public ListingDetailsModel create(CreateListingModel listingModel) {
 
-        Vehicle toAdd =new Vehicle()
+        Vehicle toAdd = new Vehicle()
                 .setType(VehicleType.valueOf(listingModel.getType()))
                 .setBrand(listingModel.getBrand())
                 .setModel(listingModel.getModel())
@@ -57,14 +57,14 @@ public class ListingService {
                 .setPicUrl(listingModel.getPicUrl())
                 .setOwner(listingModel.getOwner());
         try {
-          Vehicle created= vehicleRepository.save(toAdd);
+            Vehicle created = vehicleRepository.save(toAdd);
             Listing listing = listingRepository.save(new Listing()
                     .setVehicle(created)
                     .setPrice(listingModel.getPrice())
                     .setCreator(listingModel.getOwner()));
 
             return mapToListingDetailsModel(listing);
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return null;
         }
 
@@ -84,14 +84,20 @@ public class ListingService {
         return listingModels;
     }
 
-    private ListingDetailsModel mapToListingDetailsModel(Listing listing){
-        List<Review> reviews=reviewRepo.getReviewsByListingId(listing.getId());
+    private ListingDetailsModel mapToListingDetailsModel(Listing listing) {
+        List<Review> reviews = reviewRepo.getReviewsByListingId(listing.getId());
 
-        List<ReviewModel>reviewModels=reviews.stream().map(r-> new ReviewModel()
-                .setAuthor(r.getAuthor().getUsername())
-                .setContent(r.getContent())
-                .setLikes(r.getLikes()).setDislikes(r.getDislikes())).toList();
-        return new ListingDetailsModel().setUsername(listing.getCreator().getUsername())
+        List<ReviewModel> reviewModels = reviews.stream().map(r -> new ReviewModel()
+                        .setId(r.getId())
+                        .setListingId(r.getListing().getId())
+                        .setAuthor(r.getAuthor().getUsername())
+                        .setContent(r.getContent())
+                        .setLikes(r.getLikes())
+                        .setDislikes(r.getDislikes()))
+                .toList();
+        return new ListingDetailsModel()
+                .setId(listing.getId())
+                .setUsername(listing.getCreator().getUsername())
                 .setPhoneNo(listing.getCreator().getPhoneNo())
                 .setBrand(listing.getVehicle().getBrand())
                 .setModel(listing.getVehicle().getModel())
