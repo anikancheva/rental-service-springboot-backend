@@ -7,7 +7,7 @@ import java.time.Year;
 
 @Entity
 @Table(name = "vehicles")
-public class Vehicle{
+public class Vehicle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +29,10 @@ public class Vehicle{
     private String picUrl;
     @ManyToOne
     private UserModel owner;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     public Long getId() {
         return id;
@@ -108,6 +112,15 @@ public class Vehicle{
 
     public Vehicle setOwner(UserModel owner) {
         this.owner = owner;
+        return this;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public Vehicle setCategory(Category category) {
+        this.category = category;
         return this;
     }
 }

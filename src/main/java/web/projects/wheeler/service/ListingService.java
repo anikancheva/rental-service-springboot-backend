@@ -1,10 +1,7 @@
 package web.projects.wheeler.service;
 
 import org.springframework.stereotype.Service;
-import web.projects.wheeler.db.entities.Listing;
-import web.projects.wheeler.db.entities.Review;
-import web.projects.wheeler.db.entities.Vehicle;
-import web.projects.wheeler.db.entities.VehicleType;
+import web.projects.wheeler.db.entities.*;
 import web.projects.wheeler.db.repositories.ListingRepository;
 import web.projects.wheeler.db.repositories.ReviewRepository;
 import web.projects.wheeler.db.repositories.VehicleRepository;
@@ -41,7 +38,12 @@ public class ListingService {
     }
 
     public List<ListingModel> findAllOfType(String type) {
-        List<Listing> all = listingRepository.findAllByVehicleType(VehicleType.valueOf(type));
+        List<Listing> all;
+        if (type.equals(Category.EXOTIC.name())) {
+            all = listingRepository.findAllByVehicleCategory(Category.valueOf(type));
+        } else {
+            all = listingRepository.findAllByVehicleType(VehicleType.valueOf(type));
+        }
         return mapToListingModel(all);
     }
 
@@ -56,6 +58,13 @@ public class ListingService {
                 .setDoors(listingModel.getDoors())
                 .setPicUrl(listingModel.getPicUrl())
                 .setOwner(listingModel.getOwner());
+        Category category = switch (listingModel.getType()) {
+            case "CAR", "TRUCK", "VAN", "MOTORCYCLE", "BIKE", "RV" -> Category.REGULAR;
+            case "BOAT", "TRACTOR", "HELICOPTER", "COMBINE", "LAWNMOWER" -> Category.EXOTIC;
+            default -> null;
+        };
+        toAdd.setCategory(category);
+
         try {
             Vehicle created = vehicleRepository.save(toAdd);
             Listing listing = listingRepository.save(new Listing()
